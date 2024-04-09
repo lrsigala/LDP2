@@ -2,14 +2,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import ButtonLink from "@/components/atoms/ButtonLink";
+import ButtonAction from "@/components/atoms/ButtonAction";
 import api from "../../lib/firebase/api"
 import { useState } from "react";
 import firebase from "../../lib/firebase/firebase";
+import { useRouter } from "next/navigation";
+
 export default function Home() {
-
+  const router= useRouter()
   const estilo1 = "w-full p-1 border border-cyan-500 mt-2"
-  const at = firebase.auth.getAuth()
-
   const [credenciales, setCredenciales] = useState({
     email: '',
     password: ''
@@ -20,11 +21,8 @@ export default function Home() {
   }
   const SignIn = async()=>{
     api.SignIn(credenciales).then((s)=>{
-      console.log(s)
-      if(s){
-        alert("Verificada")
-      } else {
-        alert("Verifica tu cuenta porfa")
+      if (s==true){
+        router.replace('/App/')
       }
     })
   }
@@ -37,14 +35,11 @@ export default function Home() {
           <label>Cuenta o Correo Electrónico:</label>
           <input value={credenciales.email} onChange={(value) => { setCredenciales({ ...credenciales, ["email"]: value.target.value }) }} className={estilo1} />
           <label>Contraseña:</label>
-          <input value={credenciales.password} onChange={(value) => { setCredenciales({ ...credenciales, ["password"]: value.target.value }) }} type="password" className={`${estilo1} text-red-60012`} />
+          <input value={credenciales.password} onChange={(value) => { setCredenciales({ ...credenciales, ["password"]: value.target.value }) }} type="password" className={`${estilo1} `} />
         </div>
         <div className="flex w-full justify-evenly mt-10">
-          <button onClick={() => { SignUp() }}>Crear Cuenta</button>
-          <button onClick={() => { SignIn() }}>Iniciar Sesión</button>
-
-          <ButtonLink title={"Iniciar Sesión"} href={"/App"} />
-          <ButtonLink title={"Cerrar Sesión"} href={"/register"} />
+          <ButtonAction title={"Iniciar Sesion"}  func={SignIn} />
+          <ButtonLink title={"Crear Cuenta"} href={"/register"} />
         </div>
       </div>
     </main>
